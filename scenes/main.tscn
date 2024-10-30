@@ -1,0 +1,55 @@
+[gd_scene load_steps=5 format=3 uid="uid://b80ws84khfsx7"]
+
+[ext_resource type="PackedScene" uid="uid://10ux738qepj7" path="res://scenes/uav.tscn" id="1_aewuc"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dc7an"]
+
+[sub_resource type="Sky" id="Sky_26aok"]
+sky_material = SubResource("ProceduralSkyMaterial_dc7an")
+
+[sub_resource type="Environment" id="Environment_5j57f"]
+background_mode = 2
+sky = SubResource("Sky_26aok")
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5j57f")
+
+[node name="Uav" parent="." instance=ExtResource("1_aewuc")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.66262, 0.748956, 0, -0.748956, 0.66262, -0.0150318, 5.0065, 5.85181)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+size = Vector3(10, 0.5, 10)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.580774, 0.534482, -0.614028, 0, 0.754274, 0.656559, 0.814065, -0.381313, 0.438063, 0, 0, 0)
+
+[node name="Labels" type="Node" parent="."]
+
+[node name="PosXLbl" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+modulate = Color(0.999452, 0.160094, 3.85046e-07, 1)
+text = "+X"
+font_size = 128
+
+[node name="NegXLbl" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
+modulate = Color(0.999452, 0.160094, 3.85046e-07, 1)
+text = "-X"
+font_size = 128
+
+[node name="PosZLbl" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+modulate = Color(0.284404, 0.521358, 1, 1)
+text = "+Z"
+font_size = 128
+
+[node name="NegZLbl" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+modulate = Color(0.284404, 0.521358, 1, 1)
+text = "-Z"
+font_size = 128

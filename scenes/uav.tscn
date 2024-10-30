@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://10ux738qepj7"]
+
+[ext_resource type="Script" path="res://scripts/Uav.cs" id="1_ussi8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jp744"]
+albedo_color = Color(0.370808, 0.266724, 0.920992, 1)
+
+[node name="Uav" type="Node3D"]
+script = ExtResource("1_ussi8")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(0.5, 0.1, 0.5)
+material = SubResource("StandardMaterial3D_jp744")
