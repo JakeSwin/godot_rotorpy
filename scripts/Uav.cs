@@ -26,13 +26,13 @@ public partial class Uav : Node3D
 			GD.Print($"Error: {e.Message}");
 		}
 		floatSize = 4;
-		memFileData = new float[7];
+		memFileData = new float[6];
 	}
 
 	private void ResetMemFile()
 	{
 		float toWrite = -1.0f;
-		for (long i = 0; i < 28; i += floatSize)
+		for (long i = 0; i < 24; i += floatSize)
 		{
 			accessor.Write(i, ref toWrite);
 		}
@@ -41,7 +41,7 @@ public partial class Uav : Node3D
 	private void ReadMemFile()
 	{
 		int idx = 0;
-		for (long i = 0; i < 28; i += floatSize)
+		for (long i = 0; i < 24; i += floatSize)
 		{
 			accessor.Read(i, out memFileData[idx]);
 			idx++;
@@ -60,15 +60,20 @@ public partial class Uav : Node3D
 	{
 		var pos = new Vector3(x: memFileData[0], y: memFileData[2], z: memFileData[1]);
 		pos.Z = -pos.Z;
-		var rot = new Quaternion(x: memFileData[3], y: memFileData[4], z: memFileData[5], w: memFileData[6]).GetEuler(EulerOrder.Xyz);
-		rot.Y = -rot.Y;
+		// var rot = new Quaternion(x: memFileData[3], y: memFileData[4], z: memFileData[5], w: memFileData[6]).GetEuler(EulerOrder.Xyz);
+		var rot = new Vector3(x: memFileData[3], y: memFileData[5], z: memFileData[4]);
+		rot.Z = -rot.Z;
+		// rot.Y = -rot.Y;
+		// var tmp = rot.Z;
+		// rot.Z = -rot.Y;
+		// rot.Y = rot.Z;
 		Position = pos;
 		Rotation = rot;
 	}
 
 	private bool NoNewMemData()
 	{
-		return memFileData.SequenceEqual(new float[] { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f });
+		return memFileData.SequenceEqual(new float[] { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f });
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
