@@ -19,3 +19,6 @@ material = SubResource("StandardMaterial3D_jp744")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.2)
 material_override = SubResource("StandardMaterial3D_eerf3")
 size = Vector3(0.1, 0.1, 0.3)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.173648, 0.984808, 0, -0.984808, 0.173648, 0, -0.05, 0)

@@ -19,20 +19,27 @@ public partial class Uav : Node3D
 	{
 		try {
 			var filestr = new FileStream("uavdata.bin", FileMode.OpenOrCreate, System.IO.FileAccess.ReadWrite, FileShare.ReadWrite);
-			// file = MemoryMappedFile.CreateFromFile(filestr, FileMode.OpenOrCreate, null, 28, MemoryMappedFileAccess.ReadWrite);
 			file = MemoryMappedFile.CreateFromFile(filestr, null, 0, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false);
 			accessor = file.CreateViewAccessor(0, 0, MemoryMappedFileAccess.ReadWrite);
 		} catch (Exception e) {
 			GD.Print($"Error: {e.Message}");
 		}
 		floatSize = 4;
-		memFileData = new float[6];
+		memFileData = new float[7];
+		var new_window = new Window();
+		AddChild(new_window);
+
+		new_window.Size = new Vector2I(800, 600);
+		new_window.Position = new Vector2I(100, 100);
+		new_window.Visible = true;
+
+		// var camera = GetChild<Camera3D>();
 	}
 
 	private void ResetMemFile()
 	{
 		float toWrite = -1.0f;
-		for (long i = 0; i < 24; i += floatSize)
+		for (long i = 0; i < 28; i += floatSize)
 		{
 			accessor.Write(i, ref toWrite);
 		}
@@ -41,7 +48,7 @@ public partial class Uav : Node3D
 	private void ReadMemFile()
 	{
 		int idx = 0;
-		for (long i = 0; i < 24; i += floatSize)
+		for (long i = 0; i < 28; i += floatSize)
 		{
 			accessor.Read(i, out memFileData[idx]);
 			idx++;
@@ -58,22 +65,13 @@ public partial class Uav : Node3D
 
 	private void SetPosRot()
 	{
-		var pos = new Vector3(x: memFileData[0], y: memFileData[2], z: memFileData[1]);
-		pos.Z = -pos.Z;
-		// var rot = new Quaternion(x: memFileData[3], y: memFileData[4], z: memFileData[5], w: memFileData[6]).GetEuler(EulerOrder.Xyz);
-		var rot = new Vector3(x: memFileData[3], y: memFileData[5], z: memFileData[4]);
-		rot.Z = -rot.Z;
-		// rot.Y = -rot.Y;
-		// var tmp = rot.Z;
-		// rot.Z = -rot.Y;
-		// rot.Y = rot.Z;
-		Position = pos;
-		Rotation = rot;
+		Position = new Vector3(x: memFileData[0], y: memFileData[2], z: -memFileData[1]);
+		Quaternion = new Quaternion(x: memFileData[3], y: memFileData[5], z: -memFileData[4], w: memFileData[6]);
 	}
 
 	private bool NoNewMemData()
 	{
-		return memFileData.SequenceEqual(new float[] { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f });
+		return memFileData.SequenceEqual(new float[] { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f });
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
