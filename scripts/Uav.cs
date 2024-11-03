@@ -26,14 +26,6 @@ public partial class Uav : Node3D
 		}
 		floatSize = 4;
 		memFileData = new float[7];
-		var new_window = new Window();
-		AddChild(new_window);
-
-		new_window.Size = new Vector2I(800, 600);
-		new_window.Position = new Vector2I(100, 100);
-		new_window.Visible = true;
-
-		// var camera = GetChild<Camera3D>();
 	}
 
 	private void ResetMemFile()
