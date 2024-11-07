@@ -5,6 +5,10 @@ using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+using NetMQ;
+using NetMQ.Sockets;
+using System.Data.SqlTypes;
+
 public partial class Uav : Node3D
 {
 	private MemoryMappedFile file;
@@ -14,37 +18,21 @@ public partial class Uav : Node3D
 
 	private int floatSize;
 
+	private PullSocket receiver;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		try {
-			var filestr = new FileStream("uavdata.bin", FileMode.OpenOrCreate, System.IO.FileAccess.ReadWrite, FileShare.ReadWrite);
-			file = MemoryMappedFile.CreateFromFile(filestr, null, 0, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false);
-			accessor = file.CreateViewAccessor(0, 0, MemoryMappedFileAccess.ReadWrite);
+			receiver = new PullSocket();
+			receiver.Options.ReceiveHighWatermark = 1;
+			receiver.Bind("tcp://*:5556");
+			// receiver.Bind("ipc:///roterpy.ipc");
 		} catch (Exception e) {
 			GD.Print($"Error: {e.Message}");
 		}
 		floatSize = 4;
 		memFileData = new float[7];
-	}
-
-	private void ResetMemFile()
-	{
-		float toWrite = -1.0f;
-		for (long i = 0; i < 28; i += floatSize)
-		{
-			accessor.Write(i, ref toWrite);
-		}
-	}
-
-	private void ReadMemFile()
-	{
-		int idx = 0;
-		for (long i = 0; i < 28; i += floatSize)
-		{
-			accessor.Read(i, out memFileData[idx]);
-			idx++;
-		}
 	}
 
 	private void PrintMem()
@@ -61,25 +49,25 @@ public partial class Uav : Node3D
 		Quaternion = new Quaternion(x: memFileData[3], y: memFileData[5], z: -memFileData[4], w: memFileData[6]);
 	}
 
-	private bool NoNewMemData()
-	{
-		return memFileData.SequenceEqual(new float[] { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f });
+	private float[] ByteArrToFloatArr(byte[] arr) {
+		float[] floatarr = new float[arr.Length / 4];
+		Buffer.BlockCopy(arr, 0, floatarr, 0, arr.Length);
+		return floatarr;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		ReadMemFile();
-		if (!NoNewMemData()) {
+		var bytes = new byte[28];
+		if (receiver.TryReceiveFrameBytes(TimeSpan.Zero, out bytes)) {
+			memFileData = ByteArrToFloatArr(bytes);
 			SetPosRot();
-			ResetMemFile();
-		} 
+		}
 	}
 
 	public override void _ExitTree()
 	{
-		file.Dispose();
-		accessor.Dispose();
+		receiver.Dispose();
 		base._ExitTree();
 	}
 }
