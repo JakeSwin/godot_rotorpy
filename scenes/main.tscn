@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://b80ws84khfsx7"]
+[gd_scene load_steps=8 format=3 uid="uid://b80ws84khfsx7"]
 
 [ext_resource type="PackedScene" uid="uid://10ux738qepj7" path="res://scenes/uav.tscn" id="1_aewuc"]
 [ext_resource type="Script" path="res://scripts/camera_follow.gd" id="1_f7vcm"]
 [ext_resource type="Texture2D" uid="uid://bcvoyw4s8qxk1" path="res://assets/first000_gt.png" id="1_uwmsq"]
+[ext_resource type="Script" path="res://scripts/DownCameraWindow.cs" id="3_to3n5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dc7an"]
 
@@ -19,7 +20,7 @@ sky = SubResource("Sky_26aok")
 transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 2, 2.919)
 script = ExtResource("1_f7vcm")
 offset = Vector3(0, 2, 3)
-target = NodePath("../Window/Uav")
+target = NodePath("../DownCameraWindow/Uav")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_5j57f")
@@ -32,10 +33,17 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -5,
 pixel_size = 0.0104
 texture = ExtResource("1_uwmsq")
 
-[node name="Window" type="Window" parent="."]
+[node name="DownCameraWindow" type="Window" parent="."]
 auto_translate_mode = 1
 position = Vector2i(100, 100)
 size = Vector2i(500, 500)
 transient = true
+script = ExtResource("3_to3n5")
 
-[node name="Uav" parent="Window" instance=ExtResource("1_aewuc")]
+[node name="Uav" parent="DownCameraWindow" instance=ExtResource("1_aewuc")]
+
+[node name="PubImageTimer" type="Timer" parent="DownCameraWindow"]
+wait_time = 0.1
+autostart = true
+
+[connection signal="timeout" from="DownCameraWindow/PubImageTimer" to="DownCameraWindow" method="_on_pub_image_timer_timeout"]

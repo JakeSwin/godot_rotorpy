@@ -18,13 +18,13 @@ public partial class Uav : Node3D
 
 	private int floatSize;
 
-	private PullSocket receiver;
+	private ResponseSocket receiver;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		try {
-			receiver = new PullSocket();
+			receiver = new ResponseSocket();
 			receiver.Options.ReceiveHighWatermark = 1;
 			receiver.Bind("tcp://*:5556");
 			// receiver.Bind("ipc:///roterpy.ipc");
@@ -62,6 +62,7 @@ public partial class Uav : Node3D
 		if (receiver.TryReceiveFrameBytes(TimeSpan.Zero, out bytes)) {
 			memFileData = ByteArrToFloatArr(bytes);
 			SetPosRot();
+			receiver.TrySendFrameEmpty();
 		}
 	}
 
