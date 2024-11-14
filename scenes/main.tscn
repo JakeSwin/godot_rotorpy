@@ -41,9 +41,3 @@ transient = true
 script = ExtResource("3_to3n5")
 
 [node name="Uav" parent="DownCameraWindow" instance=ExtResource("1_aewuc")]
-
-[node name="PubImageTimer" type="Timer" parent="DownCameraWindow"]
-wait_time = 0.1
-autostart = true
-
-[connection signal="timeout" from="DownCameraWindow/PubImageTimer" to="DownCameraWindow" method="_on_pub_image_timer_timeout"]
