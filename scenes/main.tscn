@@ -29,7 +29,7 @@ environment = SubResource("Environment_5j57f")
 transform = Transform3D(0.580774, 0.534482, -0.614028, 0, 0.754274, 0.656559, 0.814065, -0.381313, 0.438063, 0, 0, 0)
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -5, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 pixel_size = 0.0104
 texture = ExtResource("1_uwmsq")
 
